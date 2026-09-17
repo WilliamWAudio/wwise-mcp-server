@@ -1,7 +1,8 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
-  "name": "io.github.williamwaudio/wwise-mcp-server",
-  "description": "The most complete Wwise MCP server — 45 tools: raw WAAPI + WAQL, 20 batch super-interfaces, dynamic introspection, event subscriptions, SoundBank, profiler, remote connect, UI automation, audition. Single binary, zero dependencies. Verified on Wwise 2021 and 2024.",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.WilliamWAudio/wwise-mcp-server",
+  "title": "Wwise MCP Server",
+  "description": "Wwise automation via WAAPI: 45 tools, batch super-interfaces, subscriptions, SoundBank, profiler.",
   "repository": {
     "url": "https://github.com/WilliamWAudio/wwise-mcp-server",
     "source": "github"
@@ -9,13 +10,13 @@
   "version": "1.4.0",
   "packages": [
     {
-      "registry_type": "github",
-      "identifier": "WilliamWAudio/wwise-mcp-server",
+      "registryType": "mcpb",
+      "identifier": "https://github.com/WilliamWAudio/wwise-mcp-server/releases/download/v1.4.0/gwwise-mcp-server.exe",
       "version": "1.4.0",
+      "fileSha256": "70bb695bf07b7d4c26587671fe1a8b891ac3ce2eb65b843b767361f5bc2f1703",
       "transport": {
         "type": "stdio"
-      },
-      "environment_variables": []
+      }
     }
   ]
 }
