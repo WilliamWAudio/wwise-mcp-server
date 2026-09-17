@@ -1,0 +1,21 @@
+wwise-mcp-server License
+
+Copyright (c) 2025-2026 william.wang. All rights reserved.
+
+Permission is granted, free of charge, to download and use this software
+(the compiled "gwwise-mcp-server" executable) for personal and commercial
+purposes, subject to the following conditions:
+
+1. You may not modify, decompile, disassemble, or reverse engineer the
+   software, or attempt to extract its embedded knowledge base.
+2. You may not redistribute the software, in original or modified form,
+   without prior written permission from the author. Linking to the
+   official GitHub repository or its Releases page is always permitted
+   and encouraged.
+3. This copyright notice shall be included with any permitted copies.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE
+USE OF THE SOFTWARE.
