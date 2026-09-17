@@ -1,0 +1,1302 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_call",
+      "description": "Execute a WAAPI function. Args must match the URI's structure. On error, analyze and retry with corrected params.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "WAAPI URI, e.g. 'ak.wwise.core.object.create'"
+          },
+          "args": {
+            "type": "object",
+            "description": "Arguments for the WAAPI call. See system prompt for each URI's args structure."
+          },
+          "options": {
+            "type": "object",
+            "description": "For object.get: ONLY {\"return\":[\"name\",\"id\",\"path\",\"type\"]}. Do NOT put \"from\" or \"transform\" here — put them as top-level keys next to uri/options."
+          }
+        },
+        "required": [
+          "uri",
+          "args"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_query",
+      "description": "Query Wwise objects via WAQL. Use to discover objects/paths before acting. Examples: '$ from type Sound', '$ where name : \"click\"'",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "waql": {
+            "type": "string",
+            "description": "WAQL query, e.g. '$ from type Sound', '$ where name : \"click\"'"
+          },
+          "return_fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Fields to return: name, id, path, type, volume, etc. Default: [name,id,path,type]"
+          }
+        },
+        "required": [
+          "waql"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "list_local_audio_files",
+      "description": "List all audio files (.wav, .aif, .ogg) in a local directory. Use this to discover available files before importing them into Wwise.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "type": "string",
+            "description": "Absolute path to the local directory, e.g. 'C:\\Users\\name\\Desktop\\Audio'"
+          }
+        },
+        "required": [
+          "directory"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_project_languages",
+      "description": "Get the Wwise project's default language and all available languages used in audio sources. Useful before batch importing audio in different languages.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "create_path_if_not_exists",
+      "description": "Recursively create objects along a path if they don't exist. Useful for auto-creating directory structures before importing or organizing content.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to create, e.g. '\\Actor-Mixer Hierarchy\\Combat\\Weapons'. Should start with root like '\\Actor-Mixer Hierarchy' or '\\Master-Mixer Hierarchy'"
+          },
+          "create_type": {
+            "type": "string",
+            "description": "Type of containers to create: 'Folder', 'ActorMixer', 'BlendContainer', etc. Default: 'Folder'"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_rename_lowercase",
+      "description": "Batch rename multiple objects to lowercase. Supports recursive operation on descendants. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs (GUIDs or paths) to rename"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, recursively include all child objects of the specified objects. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter objects by type (e.g. 'Sound', 'ActorMixer', '*' for all). Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_rename_titlecase",
+      "description": "Batch rename multiple objects to Title Case. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs (GUIDs or paths) to rename"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, recursively include all child objects. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter by type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_rename_uppercase",
+      "description": "Batch rename multiple objects to UPPERCASE. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs to rename"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, recursively include all child objects. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter by type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_rename_find_replace",
+      "description": "Find and replace text in object names. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs to rename"
+          },
+          "find": {
+            "type": "string",
+            "description": "Text to find in names"
+          },
+          "replace": {
+            "type": "string",
+            "description": "Text to replace with"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, recursively include all child objects. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter by type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids",
+          "find",
+          "replace"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_rename_add_prefix",
+      "description": "Add prefix to object names. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Prefix to add"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, recursively include all child objects. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter by type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids",
+          "prefix"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_rename_add_suffix",
+      "description": "Add suffix to object names. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs"
+          },
+          "suffix": {
+            "type": "string",
+            "description": "Suffix to add"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, recursively include all child objects. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter by type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids",
+          "suffix"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_delete",
+      "description": "Delete multiple objects. Supports recursive deletion. All changes are atomic (single undo step). USE WITH CAUTION!",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs to delete"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, delete objects and all their children. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, filter by type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_smart_delete",
+      "description": "Safely delete Wwise objects with optional recursive expansion, name filtering, referencesTo preflight checks, and preview mode. Prefer this over batch_delete for general cleanup tasks, but for requests about removing unused/redundant objects under the current selected structure, prefer batch_delete_unused_descendants.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs or full Wwise paths to inspect/delete."
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, include all descendants before filtering. Default: false."
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, only keep objects of this type. Default: '*'."
+          },
+          "name_contains": {
+            "type": "string",
+            "description": "Optional substring that object names must contain to be considered for deletion."
+          },
+          "exclude_name_contains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional substrings that disqualify an object from deletion."
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Whether name filtering is case-sensitive. Default: false."
+          },
+          "check_references": {
+            "type": "boolean",
+            "description": "If true, query referencesTo before deleting. Default: true."
+          },
+          "reference_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional referrer object types to check, e.g. ['Event','Action','SoundBank']."
+          },
+          "block_if_referenced": {
+            "type": "boolean",
+            "description": "If true, referenced objects are reported and skipped instead of deleted. Default: true."
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "If true, only return the preflight report and do not delete anything. Default: false."
+          }
+        },
+        "required": [
+          "object_ids"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_delete_unused_descendants",
+      "description": "Delete truly unused descendants under selected Wwise structures. Use this for requests like '帮我删除当前选中对象下的无用对象', '删除当前选中对象下的冗余对象', or 'delete unused/redundant objects under the selected structure'. When descendants expose a boolean Inclusion flag, objects with Inclusion=false are treated as unused and eligible for deletion, while descendants that do not expose Inclusion are skipped rather than blocking the decision. For AudioFileSource children that do not expose Inclusion, the tool also compares them against the parent Sound's current source file paths and treats non-matching sibling sources as unused. The result reports unresolved descendants separately. If no descendants expose Inclusion at all, the tool falls back to ancestor-aware referencesTo protection.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of root object IDs or full Wwise paths whose descendants should be analyzed."
+          },
+          "candidate_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional object types that are eligible for deletion. If omitted, all descendant types are eligible."
+          },
+          "include_root": {
+            "type": "boolean",
+            "description": "If true, the selected root objects themselves may also be deleted when unused. Default: false."
+          },
+          "check_references": {
+            "type": "boolean",
+            "description": "If true, query referencesTo for descendant and ancestor-aware protection. Default: true."
+          },
+          "reference_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional referrer object types to check, e.g. ['Event','Action','SoundBank']."
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "If true, only return the preflight report and do not delete anything. Default: false."
+          }
+        },
+        "required": [
+          "object_ids"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_convert_type",
+      "description": "Convert objects to a different type. Supports recursive conversion. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs to convert"
+          },
+          "target_type": {
+            "type": "string",
+            "description": "Target type, e.g. 'ActorMixer', 'Folder', 'SwitchContainer'"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, convert descendant objects too. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, only convert objects of this type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids",
+          "target_type"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_set_property",
+      "description": "Set same property value on multiple objects. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs"
+          },
+          "property": {
+            "type": "string",
+            "description": "Property name, e.g. 'Volume', 'Pitch', 'IsLoopingEnabled'"
+          },
+          "value": {
+            "type": [
+              "number",
+              "boolean",
+              "string"
+            ],
+            "description": "Property value to set"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, set property on descendant objects too. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, only set on objects of this type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids",
+          "property",
+          "value"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_move",
+      "description": "Move multiple objects to a new parent. Supports recursive operation. All changes are atomic (single undo step).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object IDs to move"
+          },
+          "new_parent_id": {
+            "type": "string",
+            "description": "New parent object ID (GUID or path)"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "If true, move descendant objects too. Default: false"
+          },
+          "filterType": {
+            "type": "string",
+            "description": "When recursive=true, only move objects of this type. Default: '*'"
+          }
+        },
+        "required": [
+          "object_ids",
+          "new_parent_id"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_get_children_by_type",
+      "description": "Query and return all objects of specified types within/under selected objects. Returns list of matching object IDs for further processing.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Root object IDs to search within"
+          },
+          "type_list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of object types to filter by, e.g. ['Sound', 'ActorMixer', 'Folder']"
+          },
+          "keep_self": {
+            "type": "boolean",
+            "description": "Include the root objects themselves if they match the type_list. Default: false"
+          },
+          "include_descendants": {
+            "type": "boolean",
+            "description": "If true, search all descendants recursively. If false, only direct children. Default: true"
+          }
+        },
+        "required": [
+          "object_ids",
+          "type_list"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_copy_missing_descendants",
+      "description": "Compare a source subtree and target subtree by relative child path/name, then copy only the top-level objects that are missing in the target while preserving hierarchy. Returns copied_top_level_object_ids, copied_object_ids, and copied_object_map for all newly materialized objects. By default it also syncs copied objects' effective OutputBus from the source side by setting OverrideOutput and OutputBus when needed. Use this for requests like: under the selected object, Skill_Hit and Skill_Release each contain an ActorMixer named GeneralSkills; recursively check every child under Skill_Hit/GeneralSkills and copy anything missing by same relative name/path to Skill_Release/GeneralSkills.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Selected scope root object IDs or paths. The tool will search inside this scope for source_parent_name/subtree_name and target_parent_name/subtree_name."
+          },
+          "source_parent_name": {
+            "type": "string",
+            "description": "Ancestor or direct parent name that identifies the source subtree. Default: Skill_Hit."
+          },
+          "target_parent_name": {
+            "type": "string",
+            "description": "Ancestor or direct parent name that identifies the target subtree. Default: Skill_Release."
+          },
+          "subtree_name": {
+            "type": "string",
+            "description": "Name of the matching source/target subtree under each parent. Default: GeneralSkills."
+          },
+          "subtree_type": {
+            "type": "string",
+            "description": "Expected type of the matching subtree. Default: ActorMixer. Use '*' to allow any type."
+          },
+          "source_root_id": {
+            "type": "string",
+            "description": "Optional explicit source subtree GUID or path. If provided with target_root_id, object_ids are only used as fallback."
+          },
+          "target_root_id": {
+            "type": "string",
+            "description": "Optional explicit target subtree GUID or path. If provided with source_root_id, object_ids are only used as fallback."
+          },
+          "match_type": {
+            "type": "boolean",
+            "description": "If true, require both relative path/name and object type to match. Default: false, meaning same relative path/name counts as existing."
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Whether name/path comparisons are case-sensitive. Default: false."
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "If true, only report what would be copied. Default: false."
+          },
+          "on_name_conflict": {
+            "type": "string",
+            "description": "Wwise onNameConflict policy for object.copy. Default: fail to avoid accidental duplicate renamed copies."
+          },
+          "sync_output_bus": {
+            "type": "boolean",
+            "description": "If true, after copying, preserve the source-side effective OutputBus on all newly copied target objects by enabling OverrideOutput and setting the OutputBus reference when needed. Default: true."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_move_missing_descendants",
+      "description": "Compare a source subtree and target subtree by relative child path/name, then move only the top-level source objects that are missing in the target into the matching target parent while preserving hierarchy. This is a real move operation, not copy+delete. Returns moved_top_level_object_ids, moved_object_ids, and moved_object_map for all moved objects. By default it captures source-side effective OutputBus before moving and restores that routing on moved objects when needed. Use this when the user explicitly wants missing objects moved/reorganized from Skill_Hit/GeneralSkills to Skill_Release/GeneralSkills instead of duplicated.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Selected scope root object IDs or paths. The tool will search inside this scope for source_parent_name/subtree_name and target_parent_name/subtree_name."
+          },
+          "source_parent_name": {
+            "type": "string",
+            "description": "Ancestor or direct parent name that identifies the source subtree. Default: Skill_Hit."
+          },
+          "target_parent_name": {
+            "type": "string",
+            "description": "Ancestor or direct parent name that identifies the target subtree. Default: Skill_Release."
+          },
+          "subtree_name": {
+            "type": "string",
+            "description": "Name of the matching source/target subtree under each parent. Default: GeneralSkills."
+          },
+          "subtree_type": {
+            "type": "string",
+            "description": "Expected type of the matching subtree. Default: ActorMixer. Use '*' to allow any type."
+          },
+          "source_root_id": {
+            "type": "string",
+            "description": "Optional explicit source subtree GUID or path. If provided with target_root_id, object_ids are only used as fallback."
+          },
+          "target_root_id": {
+            "type": "string",
+            "description": "Optional explicit target subtree GUID or path. If provided with source_root_id, object_ids are only used as fallback."
+          },
+          "match_type": {
+            "type": "boolean",
+            "description": "If true, require both relative path/name and object type to match. Default: false, meaning same relative path/name counts as existing."
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Whether name/path comparisons are case-sensitive. Default: false."
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "If true, only report what would be moved. Default: false."
+          },
+          "on_name_conflict": {
+            "type": "string",
+            "description": "Wwise onNameConflict policy for object.move. Default: fail to avoid accidental duplicate renamed moves."
+          },
+          "sync_output_bus": {
+            "type": "boolean",
+            "description": "If true, capture source-side effective OutputBus before moving and preserve it on moved objects by enabling OverrideOutput and setting the OutputBus reference when needed. Default: true."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_sync_output_bus_by_relative_path",
+      "description": "Synchronize target objects' effective OutputBus to their source counterparts by matching relative paths under source_root_id and target_root_id. This uses setProperty OverrideOutput=true plus setReference OutputBus=<source bus>. Use this when copied/mirrored Wwise objects inherit the wrong Bus from their new parent, especially after batch_copy_missing_descendants.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source_root_id": {
+            "type": "string",
+            "description": "Source subtree root GUID or path, e.g. Skill_Hit/GeneralSkills."
+          },
+          "target_root_id": {
+            "type": "string",
+            "description": "Target subtree root GUID or path, e.g. Skill_Release/GeneralSkills."
+          },
+          "target_object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional target object GUIDs/paths to sync. If omitted, all target descendants are considered."
+          },
+          "include_target_descendants": {
+            "type": "boolean",
+            "description": "If true, expand target_object_ids to include their descendants before syncing. Default: false."
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Whether relative-path matching is case-sensitive. Default: false."
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "If true, only report what would be changed. Default: false."
+          }
+        },
+        "required": [
+          "source_root_id",
+          "target_root_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "batch_replace_audio_by_name",
+      "description": "Traverse a Wwise object to find all Sound objects, and replace their audio sources with local .wav files of the same name from a specified directory.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "target_object_id": {
+            "type": "string",
+            "description": "Target parent object ID (GUID or path) to search for Sound objects."
+          },
+          "local_directory": {
+            "type": "string",
+            "description": "Absolute path to the local directory containing .wav files."
+          },
+          "language": {
+            "type": "string",
+            "description": "Audio language tag (e.g., 'SFX', 'Chinese'). Default is 'SFX'."
+          },
+          "originals_subfolder": {
+            "type": "string",
+            "description": "Relative path for originals subfolder, e.g. 'Combat/Weapons'. Default is empty."
+          }
+        },
+        "required": [
+          "target_object_id",
+          "local_directory"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "cleanup_unused_originals_files",
+      "description": "Scan or delete unused audio files under the Wwise Originals folder by comparing file basenames against live AudioFileSource objects in the current project.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "originals_root": {
+            "type": "string",
+            "description": "Optional absolute path to scan instead of the project's default Originals folder."
+          },
+          "preview_only": {
+            "type": "boolean",
+            "description": "If true, only report unused files. If false, delete them. Default: true."
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional file extensions to include, e.g. ['wav','akd','aif','aiff','ogg']."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_list_functions",
+      "description": "List the WAAPI function URIs that the CONNECTED Wwise version actually exposes. Use this instead of guessing whether a URI exists — the URI set differs between Wwise 2019/2021/2023/2025. Pass a filter substring (e.g. 'profiler', 'soundbank', 'remote') to narrow the result.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Case-insensitive substring filter, e.g. 'profiler'. Omit to list all."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_list_topics",
+      "description": "List the WAAPI subscription topics the connected Wwise version supports (e.g. object created/renamed, soundbank generated). Use with a filter to narrow results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Case-insensitive substring filter, e.g. 'object'. Omit to list all."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_get_schema",
+      "description": "Get the exact JSON schema (arguments and return fields) for one WAAPI URI from the connected Wwise instance. ALWAYS call this before using waapi_call with a URI whose argument structure you are not 100% sure about — it eliminates guessed-argument errors.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "The WAAPI URI to inspect, e.g. 'ak.wwise.core.audio.import'"
+          }
+        },
+        "required": [
+          "uri"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "generate_soundbanks",
+      "description": "Generate SoundBanks, optionally adding objects to a bank's inclusion list first. Leave 'soundbanks' empty to generate every bank in the project. Combines setInclusions + generate in one call.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "soundbanks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "SoundBank names or GUIDs. Empty = generate all banks."
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platform names, e.g. ['Windows']. Empty = all platforms."
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Language names, e.g. ['English(US)']. Empty = all languages."
+          },
+          "inclusions_object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional. Object GUIDs/paths to ADD to the bank's inclusion list before generating. Requires 'soundbanks' to be non-empty."
+          },
+          "inclusion_filter": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Inclusion parts: events, structures, media. Default: all three."
+          },
+          "rebuild": {
+            "type": "boolean",
+            "description": "Force a full rebuild instead of incremental. Default: false."
+          },
+          "write_to_disk": {
+            "type": "boolean",
+            "description": "Write generated banks to disk. Default: true."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_soundbank_inclusions",
+      "description": "Query which objects are currently included in a SoundBank, and with which filter (events/structures/media).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "soundbank": {
+            "type": "string",
+            "description": "SoundBank name or GUID"
+          }
+        },
+        "required": [
+          "soundbank"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "profiler_capture",
+      "description": "Run one complete profiler sampling session: enable the required data types, start capture, wait, read the capture cursor, collect voices/busses/performance counters at that time, then stop capture. Returns a summary with counts. Requires a game or Wwise playback to be running, otherwise counts will be zero.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "duration_ms": {
+            "type": "integer",
+            "description": "How long to capture, in milliseconds. Clamped to 100–60000. Default: 2000."
+          },
+          "data_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Profiler data types to enable, e.g. ['voices','busses','performance']. Default: ['voices','busses']."
+          },
+          "include_voices": {
+            "type": "boolean",
+            "description": "Collect the active voice list. Default: true."
+          },
+          "include_busses": {
+            "type": "boolean",
+            "description": "Collect bus metering data. Default: true."
+          },
+          "include_performance": {
+            "type": "boolean",
+            "description": "Collect the performance monitor counters. Default: false."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "remote_list_consoles",
+      "description": "Discover game instances / devkits on the network that Wwise can connect to for live profiling. Call this before remote_connect to get valid host values.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "remote_connect",
+      "description": "Connect Wwise to a remote game instance or devkit for live profiling and parameter tweaking. Get valid hosts from remote_list_consoles first.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "description": "Host name or IP of the target, as reported by remote_list_consoles"
+          },
+          "app_name": {
+            "type": "string",
+            "description": "Optional application name, to disambiguate multiple apps on one host"
+          },
+          "command_port": {
+            "type": "integer",
+            "description": "Optional explicit command port"
+          }
+        },
+        "required": [
+          "host"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "remote_disconnect",
+      "description": "Disconnect Wwise from the currently connected remote game instance.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ui_get_selection",
+      "description": "Get the objects currently selected in the Wwise UI, returning id/name/type/path by default. Also returns 'first_id' as a convenience for tools that take a single target object. Prefer this over a raw waapi_call to ak.wwise.ui.getSelectedObjects.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "return_fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Fields to return. Default: ['id','name','type','path']. Add 'parent' or '@PropertyName' as needed."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ui_list_commands",
+      "description": "List the Wwise UI command IDs that can be executed (layout switching, Inspector actions, transport, etc.). Command IDs vary by Wwise version — always discover them here instead of guessing.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string",
+            "description": "Case-insensitive substring filter, e.g. 'layout'. Omit to list all."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "ui_execute_command",
+      "description": "Execute a Wwise UI command, optionally against specific objects. Get valid command IDs from ui_list_commands first.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "Command ID, as returned by ui_list_commands"
+          },
+          "object_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional object GUIDs/paths the command should act on"
+          }
+        },
+        "required": [
+          "command"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_subscribe",
+      "description": "Subscribe to a WAAPI topic so that Wwise events (object created/renamed/deleted, selection changed, soundbank generated, transport state, etc.) are buffered for later reading. Call waapi_list_topics first to see the exact topics this Wwise version supports. Subscribing to the same topic twice reuses the existing subscription.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Topic name from waapi_list_topics, e.g. 'ak.wwise.core.object.nameChanged'"
+          },
+          "return_fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional object fields each event should carry, e.g. ['id','name','path','type']"
+          }
+        },
+        "required": [
+          "topic"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_poll_events",
+      "description": "Read buffered events from your WAAPI subscriptions. Returns events plus the current state of every active subscription. Events are consumed by default so you never see the same one twice. Do NOT call this in a tight loop — use waapi_wait_for_event when you need to wait for something.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subscription_id": {
+            "type": "integer",
+            "description": "Only read this subscription. Omit to read across all subscriptions."
+          },
+          "max_events": {
+            "type": "integer",
+            "description": "Maximum events to return, 1–500. Default: 50."
+          },
+          "consume": {
+            "type": "boolean",
+            "description": "true removes returned events from the buffer, false only peeks. Default: true."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_wait_for_event",
+      "description": "Block until the next event arrives on a topic, then return it. If the topic is not subscribed yet, it subscribes automatically. This is the correct way to wait for an async Wwise operation to finish — e.g. subscribe-free waiting on 'ak.wwise.core.soundbank.generationDone' right after calling generate_soundbanks. Returns timed_out=true instead of failing when nothing arrives in time.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Topic to wait on, e.g. 'ak.wwise.core.soundbank.generationDone'"
+          },
+          "subscription_id": {
+            "type": "integer",
+            "description": "Wait on an existing subscription instead of a topic name"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "description": "How long to wait, 100–120000. Default: 10000."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_list_subscriptions",
+      "description": "List active WAAPI subscriptions with how many events each has buffered, received in total, and dropped due to buffer overflow.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "waapi_unsubscribe",
+      "description": "Cancel a WAAPI subscription. Pass a subscription_id, or set unsubscribe_all to true to cancel every subscription. Always clean up subscriptions you no longer need.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subscription_id": {
+            "type": "integer",
+            "description": "The subscription to cancel"
+          },
+          "unsubscribe_all": {
+            "type": "boolean",
+            "description": "Cancel every active subscription. Default: false."
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "wwise_get_info",
+      "description": "Return the connected Wwise version and the currently open project (name, filePath, id). Use this as a health check before other work. Do NOT call ak.wwise.core.project.getInfo — that URI does not exist.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "transport_play",
+      "description": "Create a Wwise transport for an Event or Sound and start playback in one step. Pass a GUID, path, or type:name (e.g. Event:Play_Footstep). Stop with transport_control when finished.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "description": "GUID, path, or type:name of the object to audition"
+          },
+          "game_object": {
+            "type": "integer",
+            "description": "Optional game object ID to play against"
+          }
+        },
+        "required": [
+          "object"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "transport_control",
+      "description": "Execute play/stop/pause/playStop/playDirectly on one transport or all active transports. Omit transport_id to affect every transport. Set destroy=true with stop to clean up a specific transport.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "play, stop, pause, playStop, or playDirectly"
+          },
+          "transport_id": {
+            "type": "integer",
+            "description": "Transport id from transport_play / transport_list. Omit to apply to all."
+          },
+          "destroy": {
+            "type": "boolean",
+            "description": "If true and action is stop, destroy that transport afterwards. Default false."
+          }
+        },
+        "required": [
+          "action"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "transport_list",
+      "description": "List active Wwise transport objects used for auditioning, including their transport ids and bound objects.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  }
+]

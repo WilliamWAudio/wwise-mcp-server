@@ -1,0 +1,37 @@
+[package]
+name = "wwise-mcp-server"
+version = "1.4.0"
+description = "The most complete Wwise MCP server — 45 tools: raw WAAPI + WAQL, 20 batch super-interfaces, dynamic introspection, event subscriptions, SoundBank, profiler, remote connect, UI automation, audition. For Claude, Cursor, Codex and any MCP client."
+authors = ["william.wang"]
+license = "MIT"
+repository = "https://github.com/WilliamWAudio/wwise-mcp-server"
+keywords = ["wwise", "mcp", "waapi", "game-audio", "audiokinetic"]
+categories = ["command-line-utilities", "game-development"]
+edition = "2021"
+
+[lib]
+name = "gwwise_agent_lib"
+crate-type = ["rlib"]
+
+[[bin]]
+name = "gwwise-mcp-server"
+path = "src/bin/mcp_server.rs"
+
+[build-dependencies]
+chrono = "0.4"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = { version = "0.28", features = ["native-tls"] }
+futures-util = "0.3"
+chrono = "0.4"
+
+[dev-dependencies]
+uuid = { version = "1", features = ["v4"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = false

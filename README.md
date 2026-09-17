@@ -22,6 +22,8 @@
 
 Grab `gwwise-mcp-server.exe` from the [latest Release](../../releases/latest).
 
+Or build from source (Rust 1.75+): `cargo build --release`. Source builds are fully functional (all 45 tools); official release binaries additionally embed the tuned knowledge base — see [Open core](#open-core).
+
 ### 2. Enable WAAPI in Wwise
 
 Wwise → **Project > User Preferences → Enable Wwise Authoring API** (default port 8080).
@@ -112,8 +114,13 @@ Wwise Authoring  (WAAPI, port 8080)
 - Destructive batch operations run reference preflight checks and support preview mode.
 - Every batch change is one Wwise undo step.
 
+## Open core
+
+- **Source code (this repo): MIT.** Clone, build, modify, contribute — everything works, including all 45 tools and the full test suite (knowledge-dependent tests skip automatically in source builds).
+- **Tuned knowledge base: proprietary, ships in official Release binaries.** 300+ lines of battle-tested WAAPI rules that teach your AI client *when and how* to use these tools well — served automatically via MCP `instructions`. This is why the official binary gives a noticeably smarter experience than a bare source build.
+
 ## License
 
-Free for personal and commercial use. See [LICENSE](LICENSE).
+Source code: MIT. Embedded knowledge base: proprietary, free to use via official binaries. See [LICENSE](LICENSE).
 
-© 2025-2026 [william.wang](https://github.com/WilliamWAudio). All rights reserved.
+© 2025-2026 [william.wang](https://github.com/WilliamWAudio)
