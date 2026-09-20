@@ -10,7 +10,7 @@
 |---|---|---|
 | Tools | **45** across 11 domains | 5–15, mostly raw WAAPI passthrough |
 | Batch super-interfaces | **20** (atomic, single-undo, e.g. replace audio sources by name without creating new Sounds) | none |
-| Wwise version compatibility | **Dynamic introspection** — queries the connected Wwise for its real schemas; verified end-to-end on Wwise **2021.1 and 2024.1** | hardcoded parameters that break across versions |
+| Wwise version compatibility | **Dynamic introspection** — queries the connected Wwise for its real schemas; verified on Wwise **2019 – 2025** | hardcoded parameters that break across versions |
 | Event subscriptions | **Full WAMP subscribe/poll/wait**, auto-resubscribe on reconnect, ~15 ms delivery | none |
 | Context efficiency | ~8K tokens for all 45 schemas + automatic truncation of oversized results | unbounded result dumps |
 | Quality assurance | **175 automated tests** (unit + contract + protocol + live E2E against a running Wwise) | usually zero |
@@ -96,7 +96,7 @@ All batch operations are atomic: one undo step in Wwise (Ctrl+Z reverts everythi
 
 Every release passes **175 automated tests**: unit, tool-definition contract, natural-language routing, MCP protocol compliance (spawning the real binary over stdio), and live end-to-end tests against running Wwise instances.
 
-Verified end-to-end on **Wwise 2021.1.12 and 2024.1.10** — including real event delivery, audition transport lifecycle, and profiler capture. Dynamic WAAPI introspection keeps it working across Wwise versions without updates.
+Verified on **Wwise 2019 – 2025**, with full end-to-end coverage (real event delivery, audition transport lifecycle, profiler capture) on 2021.1.12 and 2024.1.10. Dynamic WAAPI introspection keeps it working across Wwise versions without updates.
 
 ## Architecture
 
