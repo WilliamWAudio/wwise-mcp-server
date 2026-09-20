@@ -96,7 +96,7 @@ All batch operations are atomic: one undo step in Wwise (Ctrl+Z reverts everythi
 
 Every release passes **175 automated tests**: unit, tool-definition contract, natural-language routing, MCP protocol compliance (spawning the real binary over stdio), and live end-to-end tests against running Wwise instances.
 
-Verified on **Wwise 2019 – 2025**, with full end-to-end coverage (real event delivery, audition transport lifecycle, profiler capture) on 2021.1.12 and 2024.1.10. Dynamic WAAPI introspection keeps it working across Wwise versions without updates.
+Verified on **Wwise 2019 – 2025**, with full end-to-end coverage (real event delivery, audition transport lifecycle, profiler capture) across many Wwise versions from 2019 to 2025. Dynamic WAAPI introspection keeps it working across Wwise versions without updates.
 
 ## Architecture
 
