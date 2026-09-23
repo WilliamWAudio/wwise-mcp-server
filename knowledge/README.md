@@ -1,7 +1,7 @@
 # Knowledge directory
 
 - `defs.json` — the OpenAI-function-calling definitions for all 45 tools (open source).
-- `base.txt` — **not included in this repository.** This is the tuned Wwise knowledge base (300+ lines of battle-tested WAAPI rules, batch-tool routing guidance, and error-recovery strategies) that gets embedded into official release binaries and served to your AI client via MCP `instructions`.
+- `base.txt` — **not included in this repository.** This is the tuned Wwise knowledge base (battle-tested WAAPI rules, batch-tool routing guidance, and error-recovery strategies) that gets embedded into official release binaries and served to your AI client via MCP `instructions`.
 
 ## What this means for source builds
 

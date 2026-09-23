@@ -4,7 +4,7 @@
 
 **A Model Context Protocol (MCP) server for Audiokinetic Wwise** — 45 tools covering raw WAAPI calls, WAQL queries, 20 batch super-interfaces, dynamic API introspection, real-time event subscriptions, SoundBank generation, profiler capture, remote game connection, UI automation, and audio audition. Works with **Claude (Desktop / Code), Cursor, Codex, and any MCP client**.
 
-> **Single self-contained executable.** No Python, no Node.js, no virtual environments, no dependencies — download one file and go. The full Wwise knowledge base (300+ lines of battle-tested WAAPI rules) ships inside the binary and is served to your AI client automatically.
+> **Single self-contained executable.** No Python, no Node.js, no virtual environments, no dependencies — download one file and go. The full Wwise knowledge base ships inside the binary and is served to your AI client automatically.
 
 ## Why this one?
 
@@ -119,7 +119,7 @@ Wwise Authoring  (WAAPI, port 8080)
 ## Open core
 
 - **Source code (this repo): MIT.** Clone, build, modify, contribute — everything works, including all 45 tools and the full test suite (knowledge-dependent tests skip automatically in source builds).
-- **Tuned knowledge base: proprietary, ships in official Release binaries.** 300+ lines of battle-tested WAAPI rules that teach your AI client *when and how* to use these tools well — served automatically via MCP `instructions`. This is why the official binary gives a noticeably smarter experience than a bare source build.
+- **Tuned knowledge base: proprietary, ships in official Release binaries.** Battle-tested WAAPI rules that teach your AI client *when and how* to use these tools well — served automatically via MCP `instructions`. This is why the official binary gives a noticeably smarter experience than a bare source build.
 
 ## License
 
